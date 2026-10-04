@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LKM Bidang Miring dan Roda Berporos</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #eef2f7;
+    color: #172033;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.35;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: #ffffff;
+    border-bottom: 1px solid #d7dee9;
+    padding: 10px 14px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  button {
+    border: 0;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-weight: 700;
+    background: #173f70;
+    color: #fff;
+  }
+  button.secondary { background: #52657d; }
+  button.success { background: #287a52; }
+  #status {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: #52657d;
+    min-height: 16px;
+  }
+  .sheet {
+    width: 210mm;
+    height: 297mm;
+    margin: 12mm auto;
+    padding: 13mm 14mm 12mm;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 14px rgba(0,0,0,.12);
+    page-break-after: always;
+  }
+  .sheet:last-child { page-break-after: auto; }
+  .header {
+    border-bottom: 2px solid #173f70;
+    padding-bottom: 7px;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    color: #173f70;
+    margin: 0;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 11px;
+    margin-top: 3px;
+    color: #52657d;
+  }
+  h2 {
+    font-size: 13px;
+    margin: 10px 0 6px;
+    padding: 5px 7px;
+    background: #edf3f9;
+    border-left: 4px solid #173f70;
+    color: #173f70;
+  }
+  h3 { font-size: 12px; margin: 8px 0 5px; color: #173f70; }
+  p { font-size: 10.5px; margin: 5px 0; }
+  li { font-size: 10.5px; margin: 3px 0; }
+  .identity {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 12px;
+    font-size: 10.5px;
+  }
+  .fieldline { border-bottom: 1px solid #697789; min-height: 20px; }
+  label.small { font-size: 10px; font-weight: 700; display: block; margin-bottom: 2px; }
+  input, textarea, select {
+    width: 100%;
+    border: 1px solid #b9c4d2;
+    border-radius: 5px;
+    padding: 6px;
+    font: inherit;
+    font-size: 10px;
+    background: #fff;
+  }
+  textarea {
+    resize: none;
+    min-height: 45px;
+  }
+  .members { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+  .box {
+    border: 1px solid #b9c4d2;
+    border-radius: 6px;
+    padding: 7px;
+    margin: 6px 0;
+  }
+  .mission {
+    border: 1px solid #9fb0c4;
+    border-radius: 7px;
+    padding: 8px;
+    margin: 6px 0;
+    background: #fafbfd;
+  }
+  .mission strong { color: #173f70; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6px 0 9px;
+    font-size: 9.5px;
+  }
+  th, td {
+    border: 1px solid #aeb9c7;
+    padding: 5px;
+    vertical-align: top;
+  }
+  th { background: #edf3f9; color: #173f70; }
+  .compact td input { border: 0; border-radius: 0; padding: 3px; }
+  .calc {
+    border: 1px solid #aeb9c7;
+    border-radius: 7px;
+    padding: 8px;
+    margin: 7px 0;
+  }
+  .calc-title { font-weight: 800; color: #173f70; font-size: 11px; margin-bottom: 5px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .checkrow { font-size: 10px; margin: 6px 0; }
+  .checkrow label { margin-right: 15px; }
+  .checkrow input { width: auto; margin-right: 4px; }
+  .footer {
+    position: absolute;
+    bottom: 7mm;
+    left: 14mm;
+    right: 14mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8.5px;
+    color: #7a8798;
+    border-top: 1px solid #d8dee7;
+    padding-top: 4px;
+  }
+  .note {
+    font-size: 9px;
+    color: #59687b;
+    font-style: italic;
+  }
+  .formula {
+    text-align: center;
+    font-weight: 700;
+    background: #f6f8fb;
+    padding: 5px;
+    margin: 5px 0;
+  }
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none !important; }
+    .sheet {
+      margin: 0;
+      box-shadow: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">Cetak / Simpan PDF</button>
+  <button class="secondary" onclick="saveDraft()">Simpan Isian</button>
+  <button class="success" onclick="sendToSpreadsheet()">Kirim ke Spreadsheet</button>
+  <div id="status"></div>
+</div>
+
+<form id="lkmForm">
+
+<!-- HALAMAN 1 -->
+<section class="sheet">
+  <div class="header">
+    <div class="title">LEMBAR KERJA MURID (LKM)</div>
+    <div class="subtitle">Pesawat Sederhana: Bidang Miring dan Roda Berporos</div>
+  </div>
+
+  <h2>A. IDENTITAS KELOMPOK</h2>
+  <div class="identity">
+    <div>
+      <label class="small">Nama Kelompok</label>
+      <input name="namaKelompok">
+    </div>
+    <div>
+      <label class="small">Kelas</label>
+      <input name="kelas">
+    </div>
+  </div>
+  <h3>Anggota Kelompok</h3>
+  <div class="members">
+    <input name="anggota1" placeholder="1. Nama">
+    <input name="anggota2" placeholder="2. Nama">
+    <input name="anggota3" placeholder="3. Nama">
+    <input name="anggota4" placeholder="4. Nama">
+    <input name="anggota5" placeholder="5. Nama">
+  </div>
+
+  <h2>B. TUJUAN PEMBELAJARAN</h2>
+  <ol>
+    <li>Mengidentifikasi karakteristik bidang miring dan roda berporos.</li>
+    <li>Menjelaskan prinsip kerja bidang miring dan roda berporos.</li>
+    <li>Menghitung keuntungan mekanis bidang miring dan roda berporos.</li>
+    <li>Menganalisis penerapan bidang miring dan roda berporos dalam kehidupan sehari-hari.</li>
+  </ol>
+
+  <h2>1. STIMULATION — PEMBERIAN RANGSANGAN</h2>
+  <div class="mission">
+    <strong>Misi Memindahkan Gerobak</strong>
+    <p>Bayangkan kamu harus memindahkan sebuah gerobak ke tempat yang lebih tinggi. Kamu dapat mendorongnya langsung ke atas atau menggunakan papan yang dibuat miring.</p>
+    <p><b>Amati stimulus pada game, kemudian tuliskan hasil pengamatanmu.</b></p>
+    <textarea name="stimulusGerobak" rows="3"></textarea>
+  </div>
+
+  <div class="mission">
+    <strong>Misi Memutar dan Menggerakkan</strong>
+    <p>Perhatikan benda yang memiliki roda dan poros, seperti gagang pintu, setir kendaraan, atau roda sepeda.</p>
+    <p><b>Apa yang kamu amati?</b></p>
+    <textarea name="stimulusRoda" rows="3"></textarea>
+  </div>
+
+  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 1 dari 4</span></div>
+</section>
+
+<!-- HALAMAN 2 -->
+<section class="sheet">
+  <div class="header">
+    <div class="title">LKM — BIDANG MIRING & RODA BERPOROS</div>
+    <div class="subtitle">Discovery Learning</div>
+  </div>
+
+  <h2>2. PROBLEM STATEMENT — IDENTIFIKASI MASALAH</h2>
+  <p>Setelah mengamati kedua stimulus, diskusikan hasil pengamatanmu bersama kelompok.</p>
+  <p><b>Rumuskan masalah yang berkaitan dengan penggunaan bidang miring dan roda berporos untuk mempermudah pekerjaan manusia.</b></p>
+
+  <div class="box">
+    <h3>Rumusan Masalah tentang Bidang Miring</h3>
+    <textarea name="masalahBidang" rows="4"></textarea>
+  </div>
+
+  <div class="box">
+    <h3>Rumusan Masalah tentang Roda Berporos</h3>
+    <textarea name="masalahRoda" rows="4"></textarea>
+  </div>
+
+  <h2>3. DATA COLLECTION — PENGUMPULAN DATA</h2>
+  <p>Gunakan <b>Game Mengalahkan Lord Mechanix 2</b> untuk mempelajari materi. Catat informasi penting yang kamu temukan.</p>
+
+  <h3>A. Bidang Miring</h3>
+  <table>
+    <tr><th style="width:32%">Informasi</th><th>Hasil Pengamatan</th></tr>
+    <tr><td>Pengertian</td><td><textarea name="dcBidangPengertian" rows="2"></textarea></td></tr>
+    <tr><td>Prinsip kerja</td><td><textarea name="dcBidangPrinsip" rows="2"></textarea></td></tr>
+    <tr><td>Rumus keuntungan mekanis</td><td><textarea name="dcBidangKM" rows="2"></textarea></td></tr>
+    <tr><td>Contoh dalam kehidupan sehari-hari</td><td><textarea name="dcBidangContoh" rows="2"></textarea></td></tr>
+  </table>
+
+  <h3>B. Roda Berporos</h3>
+  <table>
+    <tr><th style="width:32%">Informasi</th><th>Hasil Pengamatan</th></tr>
+    <tr><td>Pengertian</td><td><textarea name="dcRodaPengertian" rows="2"></textarea></td></tr>
+    <tr><td>Prinsip kerja</td><td><textarea name="dcRodaPrinsip" rows="2"></textarea></td></tr>
+    <tr><td>Rumus keuntungan mekanis</td><td><textarea name="dcRodaKM" rows="2"></textarea></td></tr>
+    <tr><td>Contoh dalam kehidupan sehari-hari</td><td><textarea name="dcRodaContoh" rows="2"></textarea></td></tr>
+  </table>
+
+  <p class="note">Catatan: Fokuskan pencatatan pada informasi yang membantu kelompok menjawab rumusan masalah.</p>
+
+  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 2 dari 4</span></div>
+</section>
+
+<!-- HALAMAN 3 -->
+<section class="sheet">
+  <div class="header">
+    <div class="title">LKM — PENGOLAHAN DATA</div>
+    <div class="subtitle">Mengolah informasi yang telah diperoleh dari game</div>
+  </div>
+
+  <h2>4. DATA PROCESSING — PENGOLAHAN DATA</h2>
+
+  <div class="calc">
+    <div class="calc-title">A. Bidang Miring</div>
+    <p>Sebuah benda memiliki <b>berat 300 N</b> dan dipindahkan menggunakan bidang miring dengan panjang <b>6 m</b> dan tinggi <b>2 m</b>.</p>
+    <p><b>Tentukan keuntungan mekanis bidang miring tersebut.</b></p>
+    <div class="grid2">
+      <div><label class="small">Diketahui</label><textarea name="dpBidangDiketahui" rows="4"></textarea></div>
+      <div><label class="small">Ditanyakan</label><textarea name="dpBidangDitanyakan" rows="4"></textarea></div>
+    </div>
+    <label class="small">Penyelesaian</label>
+    <textarea name="dpBidangPenyelesaian" rows="5"></textarea>
+    <label class="small">Jawaban</label>
+    <input name="dpBidangJawaban" placeholder="Keuntungan mekanis = ...">
+  </div>
+
+  <div class="calc">
+    <div class="calc-title">B. Roda Berporos</div>
+    <p>Sebuah roda berporos memiliki <b>jari-jari roda 20 cm</b> dan <b>jari-jari poros 5 cm</b>.</p>
+    <p><b>Tentukan keuntungan mekanis roda berporos tersebut.</b></p>
+    <div class="grid2">
+      <div><label class="small">Diketahui</label><textarea name="dpRodaDiketahui" rows="4"></textarea></div>
+      <div><label class="small">Ditanyakan</label><textarea name="dpRodaDitanyakan" rows="4"></textarea></div>
+    </div>
+    <label class="small">Penyelesaian</label>
+    <textarea name="dpRodaPenyelesaian" rows="5"></textarea>
+    <label class="small">Jawaban</label>
+    <input name="dpRodaJawaban" placeholder="Keuntungan mekanis = ...">
+  </div>
+
+  <div class="box">
+    <h3>Analisis Singkat</h3>
+    <p>Menurut kelompokmu, mengapa bidang miring dan roda berporos dapat mempermudah pekerjaan manusia?</p>
+    <textarea name="analisisSingkat" rows="4"></textarea>
+  </div>
+
+  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 3 dari 4</span></div>
+</section>
+
+<!-- HALAMAN 4 -->
+<section class="sheet">
+  <div class="header">
+    <div class="title">LKM — VERIFICATION & GENERALIZATION</div>
+    <div class="subtitle">Membandingkan hasil dan menarik kesimpulan</div>
+  </div>
+
+  <h2>5. VERIFICATION — PEMBUKTIAN</h2>
+  <p>Bandingkan hasil pekerjaan kelompokmu dengan kelompok lain.</p>
+
+  <div class="checkrow">
+    <b>Apakah terdapat perbedaan hasil?</b><br>
+    <label><input type="radio" name="perbedaanHasil" value="Tidak"> Tidak</label>
+    <label><input type="radio" name="perbedaanHasil" value="Ya"> Ya</label>
+  </div>
+
+  <div class="box">
+    <label class="small">Jika terdapat perbedaan, bagian yang berbeda adalah:</label>
+    <textarea name="bagianBerbeda" rows="3"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Hasil diskusi setelah membandingkan jawaban:</label>
+    <textarea name="hasilDiskusi" rows="4"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Penguatan dari guru:</label>
+    <textarea name="penguatanGuru" rows="3"></textarea>
+  </div>
+
+  <h2>6. GENERALIZATION — MENARIK KESIMPULAN</h2>
+
+  <div class="box">
+    <label class="small">Bidang miring adalah...</label>
+    <textarea name="genBidangDef" rows="2"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Bidang miring dapat mempermudah pekerjaan karena...</label>
+    <textarea name="genBidangFungsi" rows="2"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Roda berporos adalah...</label>
+    <textarea name="genRodaDef" rows="2"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Roda berporos dapat mempermudah pekerjaan karena...</label>
+    <textarea name="genRodaFungsi" rows="2"></textarea>
+  </div>
+
+  <div class="box">
+    <label class="small">Kesimpulan Kelompok</label>
+    <textarea name="genKesimpulan" rows="4"></textarea>
+  </div>
+
+  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 4 dari 4</span></div>
+</section>
+
+</form>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzae1wPaYlRGbIndTAw7SrVNBPn67w-WQ8x6KDSSPMK6QjEsjAJWhDX4Bk2TDM_3Vlv9w/exec";
+const form = document.getElementById("lkmForm");
+const statusEl = document.getElementById("status");
+
+function collectData() {
+  const data = {
+    waktuPengisian: new Date().toLocaleString("id-ID"),
+    namaKelompok: form.namaKelompok.value,
+    kelas: form.kelas.value,
+    anggota1: form.anggota1.value,
+    anggota2: form.anggota2.value,
+    anggota3: form.anggota3.value,
+    anggota4: form.anggota4.value,
+    anggota5: form.anggota5.value,
+
+    stimulusGerobak: form.stimulusGerobak.value,
+    stimulusRoda: form.stimulusRoda.value,
+
+    masalahBidang: form.masalahBidang.value,
+    masalahRoda: form.masalahRoda.value,
+
+    dcBidangPengertian: form.dcBidangPengertian.value,
+    dcBidangPrinsip: form.dcBidangPrinsip.value,
+    dcBidangKM: form.dcBidangKM.value,
+    dcBidangContoh: form.dcBidangContoh.value,
+
+    dcRodaPengertian: form.dcRodaPengertian.value,
+    dcRodaPrinsip: form.dcRodaPrinsip.value,
+    dcRodaKM: form.dcRodaKM.value,
+    dcRodaContoh: form.dcRodaContoh.value,
+
+    dpBidangDiketahui: form.dpBidangDiketahui.value,
+    dpBidangDitanyakan: form.dpBidangDitanyakan.value,
+    dpBidangPenyelesaian: form.dpBidangPenyelesaian.value,
+    dpBidangJawaban: form.dpBidangJawaban.value,
+
+    dpRodaDiketahui: form.dpRodaDiketahui.value,
+    dpRodaDitanyakan: form.dpRodaDitanyakan.value,
+    dpRodaPenyelesaian: form.dpRodaPenyelesaian.value,
+    dpRodaJawaban: form.dpRodaJawaban.value,
+
+    analisisSingkat: form.analisisSingkat.value,
+
+    perbedaanHasil: form.perbedaanHasil.value,
+    bagianBerbeda: form.bagianBerbeda.value,
+    hasilDiskusi: form.hasilDiskusi.value,
+    penguatanGuru: form.penguatanGuru.value,
+
+    genBidangDef: form.genBidangDef.value,
+    genBidangFungsi: form.genBidangFungsi.value,
+    genRodaDef: form.genRodaDef.value,
+    genRodaFungsi: form.genRodaFungsi.value,
+    genKesimpulan: form.genKesimpulan.value
+  };
+  return data;
+}
+
+function saveDraft() {
+  localStorage.setItem("lkmBidangRodaDraft", JSON.stringify(collectData()));
+  statusEl.textContent = "Isian berhasil disimpan di perangkat ini.";
+}
+
+function loadDraft() {
+  const raw = localStorage.getItem("lkmBidangRodaDraft");
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    Object.keys(data).forEach(key => {
+      const el = form.elements[key];
+      if (!el) return;
+      if (el.length && el[0].type === "radio") {
+        [...el].forEach(r => r.checked = r.value === data[key]);
+      } else {
+        el.value = data[key] ?? "";
+      }
+    });
+    statusEl.textContent = "Isian terakhir dimuat dari perangkat.";
+  } catch(e) {}
+}
+
+async function sendToSpreadsheet() {
+  const data = collectData();
+  statusEl.textContent = "Mengirim data ke Spreadsheet...";
+  try {
+    await fetch(ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(data)
+    });
+    statusEl.textContent = "Data dikirim ke Spreadsheet. Periksa Google Sheets untuk memastikan baris baru masuk.";
+  } catch (error) {
+    statusEl.textContent = "Pengiriman gagal. Periksa koneksi dan URL Apps Script.";
+  }
+}
+
+loadDraft();
+</script>
+</body>
+</html>
