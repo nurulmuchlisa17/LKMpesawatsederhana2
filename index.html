@@ -5,179 +5,174 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LKM Bidang Miring dan Roda Berporos</title>
 <style>
-  @page { size: A4 portrait; margin: 0; }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: #eef2f7;
-    color: #172033;
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.35;
-  }
-  .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: #ffffff;
-    border-bottom: 1px solid #d7dee9;
-    padding: 10px 14px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,.06);
-  }
-  button {
-    border: 0;
-    border-radius: 7px;
-    padding: 9px 14px;
-    cursor: pointer;
-    font-weight: 700;
-    background: #173f70;
-    color: #fff;
-  }
-  button.secondary { background: #52657d; }
-  button.success { background: #287a52; }
-  #status {
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    color: #52657d;
-    min-height: 16px;
-  }
-  .sheet {
-    width: 210mm;
-    height: 297mm;
-    margin: 12mm auto;
-    padding: 13mm 14mm 12mm;
-    background: white;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 14px rgba(0,0,0,.12);
-    page-break-after: always;
-  }
-  .sheet:last-child { page-break-after: auto; }
-  .header {
-    border-bottom: 2px solid #173f70;
-    padding-bottom: 7px;
-    margin-bottom: 10px;
-  }
-  .title {
-    font-size: 18px;
-    font-weight: 800;
-    text-align: center;
-    color: #173f70;
-    margin: 0;
-  }
-  .subtitle {
-    text-align: center;
-    font-size: 11px;
-    margin-top: 3px;
-    color: #52657d;
-  }
-  h2 {
-    font-size: 13px;
-    margin: 10px 0 6px;
-    padding: 5px 7px;
-    background: #edf3f9;
-    border-left: 4px solid #173f70;
-    color: #173f70;
-  }
-  h3 { font-size: 12px; margin: 8px 0 5px; color: #173f70; }
-  p { font-size: 10.5px; margin: 5px 0; }
-  li { font-size: 10.5px; margin: 3px 0; }
-  .identity {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 7px 12px;
-    font-size: 10.5px;
-  }
-  .fieldline { border-bottom: 1px solid #697789; min-height: 20px; }
-  label.small { font-size: 10px; font-weight: 700; display: block; margin-bottom: 2px; }
-  input, textarea, select {
-    width: 100%;
-    border: 1px solid #b9c4d2;
-    border-radius: 5px;
-    padding: 6px;
-    font: inherit;
-    font-size: 10px;
-    background: #fff;
-  }
-  textarea {
-    resize: none;
-    min-height: 45px;
-  }
-  .members { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
-  .box {
-    border: 1px solid #b9c4d2;
-    border-radius: 6px;
-    padding: 7px;
-    margin: 6px 0;
-  }
-  .mission {
-    border: 1px solid #9fb0c4;
-    border-radius: 7px;
-    padding: 8px;
-    margin: 6px 0;
-    background: #fafbfd;
-  }
-  .mission strong { color: #173f70; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 6px 0 9px;
-    font-size: 9.5px;
-  }
-  th, td {
-    border: 1px solid #aeb9c7;
-    padding: 5px;
-    vertical-align: top;
-  }
-  th { background: #edf3f9; color: #173f70; }
-  .compact td input { border: 0; border-radius: 0; padding: 3px; }
-  .calc {
-    border: 1px solid #aeb9c7;
-    border-radius: 7px;
-    padding: 8px;
-    margin: 7px 0;
-  }
-  .calc-title { font-weight: 800; color: #173f70; font-size: 11px; margin-bottom: 5px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .checkrow { font-size: 10px; margin: 6px 0; }
-  .checkrow label { margin-right: 15px; }
-  .checkrow input { width: auto; margin-right: 4px; }
-  .footer {
-    position: absolute;
-    bottom: 7mm;
-    left: 14mm;
-    right: 14mm;
-    display: flex;
-    justify-content: space-between;
-    font-size: 8.5px;
-    color: #7a8798;
-    border-top: 1px solid #d8dee7;
-    padding-top: 4px;
-  }
-  .note {
-    font-size: 9px;
-    color: #59687b;
-    font-style: italic;
-  }
-  .formula {
-    text-align: center;
-    font-weight: 700;
-    background: #f6f8fb;
-    padding: 5px;
-    margin: 5px 0;
-  }
-  @media print {
-    body { background: #fff; }
-    .toolbar { display: none !important; }
-    .sheet {
-      margin: 0;
-      box-shadow: none;
-    }
-  }
+
+*{box-sizing:border-box}
+:root{--accent:#f07824;--accent-dark:#a9430a;--ink:#273344;--muted:#667487;--line:#f1c9a9;--pale:#fff5ec}
+html,body{margin:0;width:100%;min-width:0;height:auto;background:#f5eee8;color:var(--ink);font-family:Arial,Helvetica,sans-serif;line-height:1.4}
+.toolbar{position:sticky;top:0;z-index:20;background:linear-gradient(110deg,#9e3e0a,#f07824 68%,#ffad54);padding:12px 14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;box-shadow:0 4px 16px rgba(110,54,19,.18)}
+.toolbar button,button{border:1px solid #ffe0c7;border-radius:9px;padding:9px 14px;cursor:pointer;font-weight:700;background:#fff;color:#a9430a;box-shadow:0 2px 6px #71340e22}
+.toolbar button:hover,button:hover{background:#fff4e9}
+#status{width:100%;text-align:center;font-size:12px;color:#fff;min-height:16px}
+form#lkmForm{display:block;width:100%}
+.sheet{display:block;width:min(calc(100% - 28px),1000px);max-width:1000px;min-width:0;height:auto;min-height:0;margin:18px auto;padding:28px 32px;background:#fff;border:1px solid #f4d7c2;border-radius:16px;box-shadow:0 5px 22px rgba(100,56,28,.12);overflow:visible;position:relative}
+.hero{background:linear-gradient(130deg,#fff5ec 0%,#fffaf5 58%,#ffe6cf 100%);border:1px solid #f1c9a9;border-radius:13px;padding:24px 24px 20px;margin:0 0 18px;position:relative;overflow:hidden;text-align:center}
+.hero-kicker{font-size:11px;letter-spacing:.12em;font-weight:800;color:#a9430a;margin-bottom:8px}
+.hero-emblem{font-size:38px;line-height:1.2;margin:2px 0 8px}
+.hero h1{font-size:clamp(23px,3vw,32px);line-height:1.12;color:#a9430a;letter-spacing:.025em;margin:0 0 8px;font-weight:900}
+.hero h1 span{color:#e66b16}
+.hero h2{font-size:18px;line-height:1.3;color:#a9430a;margin:0 0 9px;padding:0;background:none;border:0;text-align:center}
+.hero p{max-width:760px;margin:0 auto 12px;font-size:13px;color:#4c5868}
+.hero-meta{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.hero-meta span{display:inline-block;padding:6px 10px;border:1px solid #f1c9a9;border-radius:999px;background:#fff;color:#9e3e0a;font-size:11px;font-weight:700}
+.header{border-bottom:2px solid #f07824;padding:0 0 8px;margin:0 0 13px;text-align:center}
+.title{font-size:17px;font-weight:800;color:#a9430a;margin:0}
+.subtitle{font-size:11px;color:#667487;margin-top:4px}
+h2{font-size:14px;line-height:1.35;color:#a9430a;background:#fff5ec;border-left:5px solid #f07824;border-radius:7px;padding:8px 10px;margin:16px 0 8px}
+h3{font-size:13px;color:#a9430a;margin:12px 0 6px}
+h4{font-size:12px;color:#d85d10;margin:10px 0 5px}
+p,li,label,td,th{font-size:11.5px;line-height:1.45}
+p{margin:5px 0}
+li{margin:3px 0}
+.identity,.members,.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+label.small{display:block;font-size:10.5px;font-weight:700;color:#4c5868;margin:0 0 4px}
+input,textarea,select{width:100%;min-width:0;border:1px solid #e7b995;border-radius:7px;padding:7px 8px;background:#fffdfb;color:#273344;font:inherit;font-size:11px}
+input:focus,textarea:focus,select:focus{outline:2px solid #ffd2ad;border-color:#f07824}
+textarea{min-height:46px;resize:vertical}
+.box,.mission,.calc,.note,.objectives-panel{border:1px solid #f1c9a9;border-radius:9px;padding:10px 12px;margin:8px 0;background:#fffaf6}
+.box,.mission{border-left:5px solid #f07824}
+.mission strong,.calc-title{color:#a9430a;font-weight:800}
+.calc-title{font-size:11px;margin-bottom:6px}
+.objectives-panel{background:linear-gradient(110deg,#fff5ec,#fffaf5);padding:12px 15px}
+.objectives-intro{font-weight:700;color:#a9430a}
+table{width:100%;border-collapse:collapse;margin:7px 0 10px;font-size:10.5px}
+th,td{border:1px solid #e8c8b1;padding:6px;vertical-align:top}
+th{background:#fff0e3;color:#9e3e0a}
+tr:nth-child(even) td{background:#fffaf6}
+.checkrow{font-size:11px;margin:7px 0}
+.checkrow input{width:auto;margin-right:5px}
+.footer,footer,.page-number,[class*="page-number"],[id*="page-number"],.page-info,[class*="page-info"],[id*="page-info"]{display:none!important}
+@media(max-width:800px){.sheet{width:calc(100% - 18px);margin:9px auto;padding:18px 16px;border-radius:13px}.identity,.members,.grid2{grid-template-columns:1fr}.hero{padding:18px 13px}.hero-meta span{font-size:10px}}
+@media print{body{background:#fff}.toolbar{display:none!important}.sheet{width:100%;max-width:none;margin:0;padding:12mm;border:0;border-radius:0;box-shadow:none;page-break-after:always}.sheet:last-of-type{page-break-after:auto}.hero,.box,.mission,.calc,.note,.objectives-panel,h2,th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+
+
+/* Palet hijau-putih */
+:root{--accent:#24845a;--accent-dark:#14563c;--ink:#26372f;--muted:#66766d;--line:#b9ddc9;--pale:#f0faf4}
+html,body{background:#eef6f0;color:var(--ink)}
+.toolbar{background:linear-gradient(110deg,#124c36,#24845a 68%,#5aaa7e);box-shadow:0 4px 16px rgba(20,86,60,.16)}
+.toolbar button,button{border-color:#c6e5d3;color:#14563c}
+.toolbar button:hover,button:hover{background:#eefaf2}
+.sheet{background:#fff;border-color:#c8e2d2;box-shadow:0 5px 22px rgba(20,86,60,.09)}
+.hero{background:linear-gradient(130deg,#f3fbf6 0%,#fff 58%,#e1f4e8 100%);border-color:#b9ddc9}
+.hero-kicker,.hero h1,.hero h2{color:#14563c}
+.hero h1 span{color:#24845a}
+.hero p{color:#4c6255}
+.hero-meta span{border-color:#c8e2d2;color:#14563c;background:#fff}
+.header{border-bottom-color:#24845a}
+.title,h2,h3{color:#14563c}
+h2{background:#f0faf4;border-left-color:#24845a}
+h4{color:#24845a}
+label.small{color:#4c6255}
+input,textarea,select{border-color:#c8e2d2;background:#fcfffd;color:#26372f}
+input:focus,textarea:focus,select:focus{outline-color:#c1e8d1;border-color:#24845a}
+.box,.mission,.calc,.note,.objectives-panel{border-color:#c8e2d2;background:#f8fdf9}
+.box,.mission{border-left-color:#24845a}
+.mission strong,.calc-title,.objectives-intro{color:#14563c}
+.objectives-panel{background:linear-gradient(110deg,#f0faf4,#fff)}
+th,td{border-color:#c8e2d2}
+th{background:#e6f5ec;color:#14563c}
+tr:nth-child(even) td{background:#f8fdf9}
+@media print{.hero,.box,.mission,.calc,.note,.objectives-panel,h2,th{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+
+
+/* Judul utama bergaya misi seperti LKM Tuas & Katrol, versi hijau-putih */
+.hero{
+  text-align:center;
+  padding:26px 24px 22px !important;
+  background:linear-gradient(135deg,#ffffff 0%,#f4fbf6 55%,#e5f5eb 100%) !important;
+  border:2px solid #b9ddc9 !important;
+  border-radius:14px !important;
+  box-shadow:0 5px 0 #d4ebdc, 0 10px 22px rgba(20,86,60,.08) !important;
+}
+.hero-kicker{
+  display:inline-block;
+  background:#e7f6ed;
+  border:1px solid #b9ddc9;
+  border-radius:999px;
+  padding:6px 13px;
+  color:#14563c !important;
+  font-weight:900;
+  letter-spacing:.13em;
+  font-size:10px;
+  margin-bottom:10px;
+}
+.hero-emblem{font-size:40px;line-height:1.1;margin:3px 0 9px}
+.hero h1{
+  color:#14563c !important;
+  font-size:clamp(27px,4vw,40px) !important;
+  font-weight:950 !important;
+  line-height:1.05 !important;
+  letter-spacing:.025em !important;
+  text-transform:uppercase;
+  margin:0 auto 9px !important;
+  text-shadow:0 2px 0 #d4ebdc;
+}
+.hero h1 span{
+  color:#24845a !important;
+  display:inline-block;
+}
+.hero h2{
+  color:#14563c !important;
+  font-size:17px !important;
+  font-weight:800 !important;
+  margin:0 auto 10px !important;
+}
+.hero p{
+  font-size:13px !important;
+  max-width:720px;
+  margin:0 auto 13px !important;
+}
+.hero-meta{gap:8px}
+.hero-meta span{
+  background:#fff !important;
+  border:1px solid #b9ddc9 !important;
+  color:#14563c !important;
+  border-radius:8px !important;
+  padding:7px 11px !important;
+  font-weight:800 !important;
+  box-shadow:0 2px 0 #e0f1e6;
+}
+@media(max-width:800px){
+ .hero{padding:20px 13px 17px !important}
+ .hero h1{font-size:clamp(24px,7vw,32px) !important}
+}
+
+
+
+/* Header hijau tua dengan tulisan putih sesuai referensi */
+.hero{
+  background:linear-gradient(135deg,#103f2e 0%,#14563c 55%,#1d704d 100%) !important;
+  border:3px solid #2d8a61 !important;
+  box-shadow:0 5px 0 #b8ddc8,0 12px 24px rgba(13,57,40,.18) !important;
+  color:#fff !important;
+}
+.hero-kicker{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.45) !important;
+  color:#fff !important;
+}
+.hero h1,.hero h1 span,.hero h2,.hero p{
+  color:#fff !important;
+  text-shadow:none !important;
+}
+.hero-meta span{
+  background:rgba(255,255,255,.97) !important;
+  color:#14563c !important;
+  border:1px solid #c8e7d5 !important;
+  box-shadow:0 2px 0 rgba(0,0,0,.12) !important;
+}
+
 </style>
 </head>
 <body>
@@ -193,10 +188,14 @@
 
 <!-- HALAMAN 1 -->
 <section class="sheet">
-  <div class="header">
-    <div class="title">LEMBAR KERJA MURID (LKM)</div>
-    <div class="subtitle">Pesawat Sederhana: Bidang Miring dan Roda Berporos</div>
-  </div>
+  <header class="hero">
+    <div class="hero-kicker">LEMBAR KERJA MURID • IPA SMP KELAS VIII</div>
+    <div class="hero-emblem" aria-hidden="true">⛰️</div>
+    <h1>MENGALAHKAN<br><span>LORD MECHANIX 2</span></h1>
+    <h2>Misi Bidang Miring dan Roda Berporos</h2>
+    <p>Jelajahi cara kerja pesawat sederhana, hitung keuntungan mekanis, dan rancang solusi untuk mempermudah pekerjaan dalam kehidupan sehari-hari.</p>
+    <div class="hero-meta"><span>🔎 Discovery Learning</span><span>🧩 IPA • Pesawat Sederhana</span><span>⏱️ Kegiatan Kelompok</span></div>
+  </header>
 
   <h2>A. IDENTITAS KELOMPOK</h2>
   <div class="identity">
@@ -219,12 +218,14 @@
   </div>
 
   <h2>B. TUJUAN PEMBELAJARAN</h2>
-  <ol>
-    <li>Mengidentifikasi karakteristik bidang miring dan roda berporos.</li>
-    <li>Menjelaskan prinsip kerja bidang miring dan roda berporos.</li>
-    <li>Menghitung keuntungan mekanis bidang miring dan roda berporos.</li>
-    <li>Menganalisis penerapan bidang miring dan roda berporos dalam kehidupan sehari-hari.</li>
-  </ol>
+  <div class="objectives-panel">
+    <p class="objectives-intro">Setelah mengikuti kegiatan pembelajaran ini, murid diharapkan mampu:</p>
+    <ol>
+      <li>Mengidentifikasi jenis-jenis bidang miring dan roda berporos serta menjelaskan prinsip kerjanya.</li>
+      <li>Menghitung keuntungan mekanis bidang miring dan roda berporos.</li>
+      <li>Menganalisis permasalahan dalam kehidupan sehari-hari dan merancang solusi menggunakan bidang miring dan roda berporos yang sesuai.</li>
+    </ol>
+  </div>
 
   <h2>1. STIMULATION — PEMBERIAN RANGSANGAN</h2>
   <div class="mission">
@@ -241,7 +242,7 @@
     <textarea name="stimulusRoda" rows="3"></textarea>
   </div>
 
-  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 1 dari 4</span></div>
+  
 </section>
 
 <!-- HALAMAN 2 -->
@@ -288,15 +289,12 @@
 
   <p class="note">Catatan: Fokuskan pencatatan pada informasi yang membantu kelompok menjawab rumusan masalah.</p>
 
-  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 2 dari 4</span></div>
+  
 </section>
 
 <!-- HALAMAN 3 -->
 <section class="sheet">
-  <div class="header">
-    <div class="title">LKM — PENGOLAHAN DATA</div>
-    <div class="subtitle">Mengolah informasi yang telah diperoleh dari game</div>
-  </div>
+  <div class="section-top"><span>TAHAP PENYELIDIKAN</span><span>🌿 LORD MECHANIX 2</span></div>
 
   <h2>4. DATA PROCESSING — PENGOLAHAN DATA</h2>
 
@@ -334,14 +332,14 @@
     <textarea name="analisisSingkat" rows="4"></textarea>
   </div>
 
-  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 3 dari 4</span></div>
+  
 </section>
 
 <!-- HALAMAN 4 -->
 <section class="sheet">
   <div class="header">
     <div class="title">LKM — VERIFICATION & GENERALIZATION</div>
-    <div class="subtitle">Membandingkan hasil dan menarik kesimpulan</div>
+    
   </div>
 
   <h2>5. VERIFICATION — PEMBUKTIAN</h2>
@@ -395,7 +393,7 @@
     <textarea name="genKesimpulan" rows="4"></textarea>
   </div>
 
-  <div class="footer"><span>LKM Bidang Miring & Roda Berporos</span><span>Halaman 4 dari 4</span></div>
+  
 </section>
 
 </form>
@@ -501,3 +499,40 @@ loadDraft();
 </script>
 </body>
 </html>
+
+
+<style id="match-energi-1-layout">
+/* Ukuran dan lebar mengikuti LKM Energi 1 */
+html, body {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+body {
+  margin: 0 !important;
+}
+.sheet {
+  width: 100% !important;
+  max-width: 960px !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 14px 30px !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+@media (max-width: 600px) {
+  .sheet {
+    width: 100% !important;
+    padding: 0 10px 24px !important;
+  }
+}
+/* Footer judul LKM dan nomor halaman tetap dihilangkan */
+.footer, footer, [class*="footer"], [id*="footer"],
+.page-number, [class*="page-number"], [id*="page-number"],
+.page-info, [class*="page-info"], [id*="page-info"] {
+  display: none !important;
+}
+</style>
